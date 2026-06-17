@@ -7,5 +7,6 @@ func SetupRoutes(r *gin.Engine) {
 
 	TaskRoute(api)
 	UserRoute(api)
+	AuthRoute(api)
 
 }

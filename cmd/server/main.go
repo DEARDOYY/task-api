@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"task-api/internal"
 	"task-api/internal/routes"
 	"task-api/pkg/database"
 
@@ -18,8 +19,10 @@ func main() {
 	client := database.ConnectDB()
 	defer client.Disconnect(nil)
 
+	h := internal.InitHandlers()
+
 	r := gin.Default()
-	routes.SetupRoutes(r)
+	routes.SetupRoutes(r, h)
 	r.Run(":8080")
 
 }

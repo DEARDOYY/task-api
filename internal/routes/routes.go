@@ -1,12 +1,16 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"task-api/internal"
 
-func SetupRoutes(r *gin.Engine) {
+	"github.com/gin-gonic/gin"
+)
+
+func SetupRoutes(r *gin.Engine, h *internal.Handlers) {
 	api := r.Group("/api/v1")
 
 	TaskRoute(api)
 	UserRoute(api)
-	AuthRoute(api)
+	AuthRoute(api, h.Auth)
 
 }

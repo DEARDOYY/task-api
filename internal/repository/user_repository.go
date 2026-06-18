@@ -12,6 +12,7 @@ import (
 
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
+	FindByID(ctx context.Context, id primitive.ObjectID) (*domain.User, error)
 }
 
 type userRepository struct {
@@ -41,4 +42,20 @@ func (r *userRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepository) FindAll(ctx context.Context) ([]domain.User, error) {
+	var users []domain.User
+
+	cursor, err := r.collection.Find(ctx, bson.M{}) // bson.M{} = ไม่มี filter, เอาทั้งหมด
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err := cursor.All(ctx, &users); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"time"
 
 	"task-api/internal/domain"
 	"task-api/internal/repository"
@@ -53,8 +54,9 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id string, req UpdateUserR
 	}
 
 	user := &domain.User{
-		Name:  req.Name,
-		Email: req.Email,
+		Name:      req.Name,
+		Email:     req.Email,
+		UpdatedAt: time.Now(),
 	}
 
 	err = u.repo.Update(ctx, objID, user)

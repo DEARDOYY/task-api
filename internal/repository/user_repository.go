@@ -4,6 +4,8 @@ import (
 	"context"
 	"task-api/internal/domain"
 
+	"go.mongodb.org/mongo-driver/bson"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -30,4 +32,13 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	user.ID = result.InsertedID.(primitive.ObjectID)
 
 	return nil
+}
+
+func (r *userRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*domain.User, error) {
+	var user domain.User
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

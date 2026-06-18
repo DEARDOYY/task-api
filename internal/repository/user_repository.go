@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"task-api/internal/domain"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -13,6 +15,8 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	FindByID(ctx context.Context, id primitive.ObjectID) (*domain.User, error)
+	FindAll(ctx context.Context) ([]domain.User, error)
+	Update(ctx context.Context, id primitive.ObjectID, user *domain.User) error
 }
 
 type userRepository struct {
@@ -58,4 +62,25 @@ func (r *userRepository) FindAll(ctx context.Context) ([]domain.User, error) {
 	}
 
 	return users, nil
+}
+
+func (r *userRepository) Update(ctx context.Context, id primitive.ObjectID, user *domain.User) error {
+	update := bson.M{
+		"$set": bson.M{
+			"name":       user.Name,
+			"email":      user.Email,
+			"updated_at": time.Now(),
+		},
+	}
+
+	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, update)
+	if err != nil {
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		return errors.New("user not found")
+	}
+
+	return nil
 }

@@ -11,6 +11,7 @@ import (
 
 type Handlers struct {
 	Auth *handler.AuthHandler
+	User *handler.UserHandler
 }
 
 func InitHandlers() *Handlers {
@@ -18,6 +19,8 @@ func InitHandlers() *Handlers {
 	userRepo := repository.NewUserRepository(userCollection)
 	authUsecase := usecase.NewAuthUsecase(userRepo)
 	authHandler := handler.NewAuthHandler(authUsecase)
+	userUsecase := usecase.NewUserUsecase(userRepo)
+	userHandler := handler.NewUserHandler(userUsecase)
 
 	// taskCollection := database.GetCollection(os.Getenv("MONGO_DB_NAME"), "tasks")
 	// taskRepo := repository.NewTaskRepository(taskCollection)
@@ -26,6 +29,7 @@ func InitHandlers() *Handlers {
 
 	return &Handlers{
 		Auth: authHandler,
+		User: userHandler,
 		// Task: taskHandler,
 	}
 }

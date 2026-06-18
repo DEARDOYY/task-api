@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"task-api/internal/domain"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -69,7 +68,7 @@ func (r *userRepository) Update(ctx context.Context, id primitive.ObjectID, user
 		"$set": bson.M{
 			"name":       user.Name,
 			"email":      user.Email,
-			"updated_at": time.Now(),
+			"updated_at": user.UpdatedAt,
 		},
 	}
 

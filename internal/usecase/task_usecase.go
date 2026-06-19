@@ -19,6 +19,7 @@ type CreateTaskRequest struct {
 
 type TaskUsecase interface {
 	CreateTask(ctx context.Context, req CreateTaskRequest) (*domain.Task, error)
+	GetTaskByID(ctx context.Context, id string) (*domain.Task, error)
 }
 
 type taskUsecase struct {
@@ -44,6 +45,19 @@ func (u *taskUsecase) CreateTask(ctx context.Context, req CreateTaskRequest) (*d
 	}
 
 	if err := u.repo.Create(ctx, task); err != nil {
+		return nil, err
+	}
+	return task, nil
+}
+
+func (u *taskUsecase) GetTaskByID(ctx context.Context, id string) (*domain.Task, error) {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errors.New("invalid task id")
+	}
+
+	task, err := u.repo.FindByID(ctx, objID)
+	if err != nil {
 		return nil, err
 	}
 	return task, nil

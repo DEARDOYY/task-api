@@ -30,3 +30,14 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 
 	response.Created(c, task)
 }
+
+func (h *TaskHandler) GetTaskByID(c *gin.Context) {
+	id := c.Param("id")
+	task, err := h.usecase.GetTaskByID(c.Request.Context(), id)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.OK(c, task)
+}

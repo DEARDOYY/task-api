@@ -10,5 +10,6 @@ func TaskRoute(rg *gin.RouterGroup, h *handler.TaskHandler) {
 	task := rg.Group("/tasks")
 	{
 		task.POST("/", h.CreateTask)
+		task.GET("/:id", h.GetTaskByID)
 	}
 }

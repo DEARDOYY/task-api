@@ -85,3 +85,43 @@ func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*domain.Task, error) {
 	}
 	return tasks, nil
 }
+
+func (u *taskUsecase) GetTasksByStatus(ctx context.Context, status string) ([]*domain.Task, error) {
+	tasks, err := u.repo.FindByStatus(ctx, status)
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
+func (u *taskUsecase) UpdateTaskStatus(ctx context.Context, id string, status string) (*domain.Task, error) {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errors.New("invalid task id")
+	}
+
+	task, err := u.repo.FindByID(ctx, objID)
+	if err != nil {
+		return nil, err
+	}
+
+	task.Status = status
+	task.UpdatedAt = time.Now()
+
+	if err := u.repo.Update(ctx, task); err != nil {
+		return nil, err
+	}
+	return task, nil
+}
+
+func (u *taskUsecase) DeleteTask(ctx context.Context, id string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("invalid task id")
+	}
+
+	if err := u.repo.Delete(ctx, objID); err != nil {
+		return err
+	}
+	return nil
+}

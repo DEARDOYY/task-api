@@ -67,3 +67,7 @@ func NotFound(c *gin.Context, message string) {
 func InternalError(c *gin.Context, message string) {
 	Error(c, http.StatusInternalServerError, message, nil)
 }
+
+func Deleted(c *gin.Context, message string) {
+	Success(c, http.StatusOK, message, nil)
+}

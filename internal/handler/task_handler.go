@@ -62,3 +62,42 @@ func (h *TaskHandler) GetAllTasks(c *gin.Context) {
 
 	response.OK(c, tasks)
 }
+
+func (h *TaskHandler) GetTasksByStatus(c *gin.Context) {
+	status := c.Query("status")
+	tasks, err := h.usecase.GetTasksByStatus(c.Request.Context(), status)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.OK(c, tasks)
+}
+
+func (h *TaskHandler) UpdateTaskStatus(c *gin.Context) {
+	id := c.Param("id")
+	var req usecase.UpdateTaskStatusRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, "Invalid request body", err.Error())
+		return
+	}
+
+	task, err := h.usecase.UpdateTaskStatus(c.Request.Context(), id, req.Status)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.OK(c, task)
+}
+
+func (h *TaskHandler) DeleteTask(c *gin.Context) {
+	id := c.Param("id")
+	err := h.usecase.DeleteTask(c.Request.Context(), id)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.Deleted(c, "Task deleted successfully")
+}

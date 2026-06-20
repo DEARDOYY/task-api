@@ -41,3 +41,24 @@ func (h *TaskHandler) GetTaskByID(c *gin.Context) {
 
 	response.OK(c, task)
 }
+
+func (h *TaskHandler) GetTasksByUserID(c *gin.Context) {
+	userID := c.Param("user_id")
+	tasks, err := h.usecase.GetTasksByUserID(c.Request.Context(), userID)
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.OK(c, tasks)
+}
+
+func (h *TaskHandler) GetAllTasks(c *gin.Context) {
+	tasks, err := h.usecase.GetAllTasks(c.Request.Context())
+	if err != nil {
+		response.InternalError(c, err.Error())
+		return
+	}
+
+	response.OK(c, tasks)
+}

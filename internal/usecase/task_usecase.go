@@ -17,11 +17,18 @@ type CreateTaskRequest struct {
 	UserID string `json:"user_id" binding:"required"`
 }
 
+type UpdateTaskStatusRequest struct {
+	Status string `json:"status" binding:"required"`
+}
+
 type TaskUsecase interface {
 	CreateTask(ctx context.Context, req CreateTaskRequest) (*domain.Task, error)
 	GetTaskByID(ctx context.Context, id string) (*domain.Task, error)
 	GetTasksByUserID(ctx context.Context, userID string) ([]*domain.Task, error)
 	GetAllTasks(ctx context.Context) ([]*domain.Task, error)
+	GetTasksByStatus(ctx context.Context, status string) ([]*domain.Task, error)
+	UpdateTaskStatus(ctx context.Context, id string, status string) (*domain.Task, error)
+	DeleteTask(ctx context.Context, id string) error
 }
 
 type taskUsecase struct {

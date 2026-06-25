@@ -71,3 +71,7 @@ func InternalError(c *gin.Context, message string) {
 func Deleted(c *gin.Context, message string) {
 	Success(c, http.StatusOK, message, nil)
 }
+
+func Unauthorized(c *gin.Context, message string) {
+	Error(c, http.StatusUnauthorized, message, nil)
+}

@@ -16,6 +16,7 @@ type UserRepository interface {
 	FindByID(ctx context.Context, id primitive.ObjectID) (*domain.User, error)
 	FindAll(ctx context.Context) ([]domain.User, error)
 	Update(ctx context.Context, id primitive.ObjectID, user *domain.User) error
+	FindByEmail(ctx context.Context, email string) (*domain.User, error)
 }
 
 type userRepository struct {
@@ -82,4 +83,13 @@ func (r *userRepository) Update(ctx context.Context, id primitive.ObjectID, user
 	}
 
 	return nil
+}
+
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+	var user domain.User
+	err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
